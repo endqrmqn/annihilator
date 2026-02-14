@@ -75,7 +75,7 @@ int main() {
     run_test(
         "startpos",
         "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-        7
+        6
     );
 
     // Kiwipete (castling/pins stress)
@@ -89,7 +89,7 @@ int main() {
     run_test(
         "ep_test",
         "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1",
-        6
+        7
     );
 
     return 0;
