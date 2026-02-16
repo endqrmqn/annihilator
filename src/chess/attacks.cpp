@@ -106,4 +106,15 @@ Bitboard rook_attacks(Square sq, Bitboard occ) {
     return attacks;
 }
 
+static inline Bitboard pawn_attack_map(const chess::Position& pos, chess::Color c) {
+    Bitboard pawns = pos.pieces[c][chess::PAWN];
+    Bitboard att = 0ULL;
+    while (pawns) {
+        int sq = chess::pop_lsb(pawns);     // however you pop bits
+        att |= chess::pawn_attacks[c][sq];
+    }
+    return att;
+}
+
+
 } // namespace chess

@@ -29,5 +29,11 @@ constexpr Square mk_sq(int file, int rank) { return (rank << 3) | file; }
 
 //mask
 constexpr Bitboard FILE_A = 0x0101010101010101ULL;
+constexpr Bitboard FILE_B = FILE_A << 1;
+constexpr Bitboard FILE_C = FILE_A << 2;
+constexpr Bitboard FILE_D = FILE_A << 3;
+constexpr Bitboard FILE_E = FILE_A << 4;
+constexpr Bitboard FILE_F = FILE_A << 5;
+constexpr Bitboard FILE_G = FILE_A << 6;
 constexpr Bitboard FILE_H = FILE_A << 7;
 } // namespace chess
