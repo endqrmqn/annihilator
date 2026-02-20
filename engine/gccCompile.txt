@@ -1,0 +1,3 @@
+g++ src/main.cpp src/chess/*.cpp src/uci/*.cpp src/search/*.cpp src/eval/*.cpp \
+  -Isrc -O3 -DNDEBUG -std=c++17 -o annihilator
+./annihilator   

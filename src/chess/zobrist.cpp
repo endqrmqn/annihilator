@@ -4,6 +4,13 @@ namespace chess {
 
 Zobrist ZB;
 
+// Ensure Zobrist tables are initialized before any compute_key() calls.
+// (Forgetting to call ZB.init() makes every hash key 0, which destroys TT quality.)
+struct ZobristBoot {
+    ZobristBoot() { ZB.init(); }
+};
+static ZobristBoot ZOBRIST_BOOT;
+
 static inline std::uint64_t splitmix64(std::uint64_t& x) {
     std::uint64_t z = (x += 0x9e3779b97f4a7c15ULL);
     z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9ULL;

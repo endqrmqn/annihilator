@@ -148,21 +148,46 @@ static void cmd_position(UciState& st, const std::vector<std::string>& tok) {
 
 static void cmd_go(UciState& st, const std::vector<std::string>& tok) {
     int depth = 6;
-    for (size_t i = 1; i + 1 < tok.size(); ++i) {
-        if (tok[i] == "depth") { depth = std::stoi(tok[i+1]); break; }
+    int movetime = 0;
+
+    for (size_t i = 1; i < tok.size(); ++i) {
+        if (tok[i] == "depth" && i + 1 < tok.size()) {
+            depth = std::stoi(tok[++i]);
+        } else if (tok[i] == "movetime" && i + 1 < tok.size()) {
+            movetime = std::stoi(tok[++i]);
+        }
     }
 
     search::Limits lim;
     lim.depth = depth;
 
-    search::Result r = search::think(st.pos, lim);
+    search::Result r = search::think(st.pos, lim, movetime);
 
-    std::cout << "info depth " << depth
+    const int ms_for_nps = std::max(1, r.elapsed_ms);
+    const int nps = (int)((r.nodes * 1000ULL) / (std::uint64_t)ms_for_nps);
+
+    std::cout << "info depth " << r.depth
               << " nodes " << r.nodes
-              << " score cp " << r.score
-              << "\n";
+              << " nps " << nps
+              << " time " << r.elapsed_ms;
 
-    std::cout << "bestmove " << move_to_uci(r.best) << "\n";
+    // --- UCI mate formatting ---
+    static constexpr int MATE = 900000;      // match your engine's mate constant
+    static constexpr int MATE_MARGIN = 1000; // anything within this is treated as mate
+
+    if (std::abs(r.score) >= MATE - MATE_MARGIN) {
+        // if your convention is score = +/- (MATE - ply), then ply = MATE - |score|
+        int ply = MATE - std::abs(r.score);
+        int mate_in = (ply + 1) / 2; // ply -> "mate in N" (ply count / 2 rounded up)
+
+        std::cout << " score mate " << (r.score > 0 ? mate_in : -mate_in);
+    } else {
+        std::cout << " score cp " << r.score;
+    }
+
+    std::cout << "\n";
+
+    std::cout << "bestmove " << (r.best == chess::NO_MOVE ? "0000" : move_to_uci(r.best)) << "\n";
 }
 
 
